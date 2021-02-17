@@ -6,9 +6,10 @@
     dest: "{{ blazegraph_home_dir }}/conf/{{ item }}"
     owner: "{{ blazegraph_user }}"
     group: "{{ blazegraph_user }}"
+    mode: 0664
   with_items:
     - RWStore.properties
-  notify: restart tomcat8
+  notify: restart tomcat9
 
 - name: Copy blazegraph config files
   copy:
@@ -16,10 +17,11 @@
     dest: "{{ blazegraph_home_dir }}/conf/{{ item }}"
     owner: "{{ blazegraph_user }}"
     group: "{{ blazegraph_user }}"
+    mode: 0664
   with_items:
     - blazegraph.properties
     - inference.nt
-  notify: restart tomcat8
+  notify: restart tomcat9
 
 - name: Drop in templated web.xml file
   template:
@@ -27,5 +29,9 @@
     dest: "{{ blazegraph_webxml_path }}"
     owner: "{{ blazegraph_user }}"
     group: "{{ blazegraph_user }}"
-  notify: restart tomcat8
+    mode: 0664
+  notify: restart tomcat9
   when: blazegraph_webxml_template
+
+- name: Fix permissions for Tomcat
+  raw: chown -R tomcat:tomcat /var/lib/tomcat9/webapps/ ; find /var/lib/tomcat9/webapps/ -type d -exec chmod 2775 {} + ; find /var/lib/tomcat9/webapps/ -type f -exec chmod 0664 {} + ; chmod -R g+w /var/lib/tomcat9/webapps/ ; chmod -R g+s /var/lib/tomcat9/webapps/ ; find /opt/fcrepo/ -type d -exec chmod 2775 {} + ; find /opt/blazegraph/ -type d -exec chmod 2775 {} + ; find /opt/syn/ -type d -exec chmod 2775 {} + ; find /opt/cantaloupe/ -type d -exec chmod 2775 {} + ; find /opt/fits/ -type d -exec chmod 2775 {} + ; find /opt/blazegraph/ -type f -exec chmod 0664 {} + ; find /opt/fcrepo/ -type f -exec chmod 0664 {} + ; find /opt/syn/ -type f -exec chmod 0664 {} + ; find /opt/cantaloupe/ -type f -exec chmod 0664 {} + ; find /opt/fits/ -type f -exec chmod 0664 {} + ; chmod -R g+w /opt/syn/ /opt/fcrepo/ /opt/blazegraph/ /opt/fits/ /opt/cantaloupe/ ; chmod -R g+s /opt/syn/ /opt/fcrepo/ /opt/blazegraph/ /opt/fits/ /opt/cantaloupe/

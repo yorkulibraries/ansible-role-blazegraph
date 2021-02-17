@@ -6,6 +6,8 @@
     state: directory
     owner: "{{ blazegraph_user }}"
     group: "{{ blazegraph_user }}"
+    mode: 0664
+    recurse: yes
 
 - name: Create blazegraph conf directory
   file:
@@ -13,6 +15,8 @@
     state: directory
     owner: "{{ blazegraph_user }}"
     group: "{{ blazegraph_user }}"
+    mode: 0664
+    recurse: yes
 
 - name: Create blazegraph data directory
   file:
@@ -20,3 +24,5 @@
     state: directory
     owner: "{{ blazegraph_user }}"
     group: "{{ blazegraph_user }}"
+    mode: 0664
+    recurse: yes
